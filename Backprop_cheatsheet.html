@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>Backprop_cheatsheet</title>
+
+
+<style type="text/css">
+body {
+  font-family: Helvetica, arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  background-color: white;
+  padding: 30px; }
+
+body > *:first-child {
+  margin-top: 0 !important; }
+body > *:last-child {
+  margin-bottom: 0 !important; }
+
+a {
+  color: #4183C4; }
+a.absent {
+  color: #cc0000; }
+a.anchor {
+  display: block;
+  padding-left: 30px;
+  margin-left: -30px;
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0; }
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+  cursor: text;
+  position: relative; }
+
+h1:hover a.anchor, h2:hover a.anchor, h3:hover a.anchor, h4:hover a.anchor, h5:hover a.anchor, h6:hover a.anchor {
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA09pVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoMTMuMCAyMDEyMDMwNS5tLjQxNSAyMDEyLzAzLzA1OjIxOjAwOjAwKSAgKE1hY2ludG9zaCkiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6OUM2NjlDQjI4ODBGMTFFMTg1ODlEODNERDJBRjUwQTQiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6OUM2NjlDQjM4ODBGMTFFMTg1ODlEODNERDJBRjUwQTQiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo5QzY2OUNCMDg4MEYxMUUxODU4OUQ4M0REMkFGNTBBNCIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo5QzY2OUNCMTg4MEYxMUUxODU4OUQ4M0REMkFGNTBBNCIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PsQhXeAAAABfSURBVHjaYvz//z8DJYCRUgMYQAbAMBQIAvEqkBQWXI6sHqwHiwG70TTBxGaiWwjCTGgOUgJiF1J8wMRAIUA34B4Q76HUBelAfJYSA0CuMIEaRP8wGIkGMA54bgQIMACAmkXJi0hKJQAAAABJRU5ErkJggg==) no-repeat 10px center;
+  text-decoration: none; }
+
+h1 tt, h1 code {
+  font-size: inherit; }
+
+h2 tt, h2 code {
+  font-size: inherit; }
+
+h3 tt, h3 code {
+  font-size: inherit; }
+
+h4 tt, h4 code {
+  font-size: inherit; }
+
+h5 tt, h5 code {
+  font-size: inherit; }
+
+h6 tt, h6 code {
+  font-size: inherit; }
+
+h1 {
+  font-size: 28px;
+  color: black; }
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #cccccc;
+  color: black; }
+
+h3 {
+  font-size: 18px; }
+
+h4 {
+  font-size: 16px; }
+
+h5 {
+  font-size: 14px; }
+
+h6 {
+  color: #777777;
+  font-size: 14px; }
+
+p, blockquote, ul, ol, dl, li, table, pre {
+  margin: 15px 0; }
+
+hr {
+  background: transparent url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAYAAAAECAYAAACtBE5DAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNSBNYWNpbnRvc2giIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6OENDRjNBN0E2NTZBMTFFMEI3QjRBODM4NzJDMjlGNDgiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6OENDRjNBN0I2NTZBMTFFMEI3QjRBODM4NzJDMjlGNDgiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo4Q0NGM0E3ODY1NkExMUUwQjdCNEE4Mzg3MkMyOUY0OCIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo4Q0NGM0E3OTY1NkExMUUwQjdCNEE4Mzg3MkMyOUY0OCIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PqqezsUAAAAfSURBVHjaYmRABcYwBiM2QSA4y4hNEKYDQxAEAAIMAHNGAzhkPOlYAAAAAElFTkSuQmCC) repeat-x 0 0;
+  border: 0 none;
+  color: #cccccc;
+  height: 4px;
+  padding: 0;
+}
+
+body > h2:first-child {
+  margin-top: 0;
+  padding-top: 0; }
+body > h1:first-child {
+  margin-top: 0;
+  padding-top: 0; }
+  body > h1:first-child + h2 {
+    margin-top: 0;
+    padding-top: 0; }
+body > h3:first-child, body > h4:first-child, body > h5:first-child, body > h6:first-child {
+  margin-top: 0;
+  padding-top: 0; }
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0; }
+
+h1 p, h2 p, h3 p, h4 p, h5 p, h6 p {
+  margin-top: 0; }
+
+li p.first {
+  display: inline-block; }
+li {
+  margin: 0; }
+ul, ol {
+  padding-left: 30px; }
+
+ul :first-child, ol :first-child {
+  margin-top: 0; }
+
+dl {
+  padding: 0; }
+  dl dt {
+    font-size: 14px;
+    font-weight: bold;
+    font-style: italic;
+    padding: 0;
+    margin: 15px 0 5px; }
+    dl dt:first-child {
+      padding: 0; }
+    dl dt > :first-child {
+      margin-top: 0; }
+    dl dt > :last-child {
+      margin-bottom: 0; }
+  dl dd {
+    margin: 0 0 15px;
+    padding: 0 15px; }
+    dl dd > :first-child {
+      margin-top: 0; }
+    dl dd > :last-child {
+      margin-bottom: 0; }
+
+blockquote {
+  border-left: 4px solid #dddddd;
+  padding: 0 15px;
+  color: #777777; }
+  blockquote > :first-child {
+    margin-top: 0; }
+  blockquote > :last-child {
+    margin-bottom: 0; }
+
+table {
+  padding: 0;border-collapse: collapse; }
+  table tr {
+    border-top: 1px solid #cccccc;
+    background-color: white;
+    margin: 0;
+    padding: 0; }
+    table tr:nth-child(2n) {
+      background-color: #f8f8f8; }
+    table tr th {
+      font-weight: bold;
+      border: 1px solid #cccccc;
+      margin: 0;
+      padding: 6px 13px; }
+    table tr td {
+      border: 1px solid #cccccc;
+      margin: 0;
+      padding: 6px 13px; }
+    table tr th :first-child, table tr td :first-child {
+      margin-top: 0; }
+    table tr th :last-child, table tr td :last-child {
+      margin-bottom: 0; }
+
+img {
+  max-width: 100%; }
+
+span.frame {
+  display: block;
+  overflow: hidden; }
+  span.frame > span {
+    border: 1px solid #dddddd;
+    display: block;
+    float: left;
+    overflow: hidden;
+    margin: 13px 0 0;
+    padding: 7px;
+    width: auto; }
+  span.frame span img {
+    display: block;
+    float: left; }
+  span.frame span span {
+    clear: both;
+    color: #333333;
+    display: block;
+    padding: 5px 0 0; }
+span.align-center {
+  display: block;
+  overflow: hidden;
+  clear: both; }
+  span.align-center > span {
+    display: block;
+    overflow: hidden;
+    margin: 13px auto 0;
+    text-align: center; }
+  span.align-center span img {
+    margin: 0 auto;
+    text-align: center; }
+span.align-right {
+  display: block;
+  overflow: hidden;
+  clear: both; }
+  span.align-right > span {
+    display: block;
+    overflow: hidden;
+    margin: 13px 0 0;
+    text-align: right; }
+  span.align-right span img {
+    margin: 0;
+    text-align: right; }
+span.float-left {
+  display: block;
+  margin-right: 13px;
+  overflow: hidden;
+  float: left; }
+  span.float-left span {
+    margin: 13px 0 0; }
+span.float-right {
+  display: block;
+  margin-left: 13px;
+  overflow: hidden;
+  float: right; }
+  span.float-right > span {
+    display: block;
+    overflow: hidden;
+    margin: 13px auto 0;
+    text-align: right; }
+
+code, tt {
+  margin: 0 2px;
+  padding: 0 5px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px; }
+
+pre code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent; }
+
+.highlight pre {
+  background-color: #f8f8f8;
+  border: 1px solid #cccccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px; }
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #cccccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px; }
+  pre code, pre tt {
+    background-color: transparent;
+    border: none; }
+
+sup {
+    font-size: 0.83em;
+    vertical-align: super;
+    line-height: 0;
+}
+
+kbd {
+  display: inline-block;
+  padding: 3px 5px;
+  font-size: 11px;
+  line-height: 10px;
+  color: #555;
+  vertical-align: middle;
+  background-color: #fcfcfc;
+  border: solid 1px #ccc;
+  border-bottom-color: #bbb;
+  border-radius: 3px;
+  box-shadow: inset 0 -1px 0 #bbb
+}
+
+* {
+	-webkit-print-color-adjust: exact;
+}
+@media screen and (min-width: 914px) {
+    body {
+        width: 854px;
+        margin:0 auto;
+    }
+}
+@media print {
+	table, pre {
+		page-break-inside: avoid;
+	}
+	pre {
+		word-wrap: break-word;
+	}
+}
+</style>
+
+
+</head>
+
+<body>
+
+<h1 id="toc_0">Backpropagation for people who are afraid of math</h1>
+
+<p>Back-propagation is arguably one of the more difficult concepts in machine learning to grasp.
+There are many online resources that explain the intuition behind this algorithm (IMO the best of these is the backpropagation lecture in the Stanford <a href="http://cs231n.stanford.edu/" title="cs231n course website">cs231n video lectures</a>. Another very good source, is <a href="https://en.wikipedia.org/wiki/Backpropagation">this</a>), but getting from the intuition to practice, can be (put gently) quite challenging.  </p>
+
+<p>After spending more hours then i&#39;d like to admit, trying to get all the sizes of my layers and weights to fit, constantly forgetting what&#39;s what, and what&#39;s connected where, I sat down and drew a diagram that illustrates the entire process. Consider it a visual pseudocode. </p>
+
+<h2 id="toc_1">The Challenge: From intuition to practice</h2>
+
+<p>So, assuming you have a good intuitive understanding of what the algorithm should be doing, but have trouble getting it to work, this post is for you!</p>
+
+<p>Now, to be clear, this post will NOT make any attempt to explain the intuition part. As I wrote previously, there are many good and reliable resources that do that. This is a simple (as simple as the algorithm allows..) practical guide to help you get your code to work. In fact, your code will probably work if you follow these steps with no intuition whatsoever. Still, I highly encourage you to read a bit about the <a href="https://en.wikipedia.org/wiki/Perceptron">perceptron</a>. This is the bare bone neural network, consisting of only one layer. Understanding how to calculate the weights in a simple network, is REALLY helpful before jumping into a more complex one. </p>
+
+<p>Ready?
+Let&#39;s jump in!  </p>
+
+<h2 id="toc_2">Deciphering the equation</h2>
+
+<p>The illustration below is a schematic representation of an arbitrary network. As the process of backpropagation is basically the same for every step (depending on the <a href="https://medium.com/the-theory-of-everything/understanding-activation-functions-in-neural-networks-9491262884e0">activation function</a> you use). We are only looking at the final layers (You can regard layer L95 as the input layer, if that makes you feel more secure. It makes no difference as far as the calculation is concerned). </p>
+
+<p><img src="images/backprop-06.png" alt="some title"></p>
+
+<p>As you can see, our arbitrary network has 5 neurons on layer 95, then 2 neurons on layer 96, then 4, 3, 3, and 1 neuron for the output layer (L100). All layers are connected by weights, marked (traditionally) by lines.<br>
+Notice that each node is separated into <em>Z</em> and <em>O</em>. For each node, the <em>Z</em> values are calculated by multiplying the <em>O</em> values of the previous layer, with the weights connecting them with that node. <em>O</em> is obtained by applying a non linear activation function on <em>Z</em>. Now, below you will find the dreaded gradient calculation. Fear not! We will go over each expression.</p>
+
+<p><img src="images/backprop-05.png" alt="some title"></p>
+
+<p>When trying to update and optimize the network&#39;s weights, we are trying to find  <img src="https://latex.codecogs.com/gif.latex?%5Cfrac%7B%5Cpartial%20L%7D%7B%5Cpartial%20W_L%7D" alt="">, The derivative of the loss with regard to the weights (&quot;how does a change to the weights effects the loss&quot;), and using the chain rule, divide this task into three:<br>
+<img src="https://latex.codecogs.com/gif.latex?%5Cfrac%7B%5Cpartial%20L%7D%7B%5Cpartial%20O_L&amp;plus;1%7D" alt=""> The derivative of the loss with regard to the next layer. This is the loss &quot;passed upstream&quot; from the output layer. or in other words- &quot;How does a change to the next layer, effects the loss&quot;.</p>
+
+<p><img src="https://latex.codecogs.com/gif.latex?%5Cfrac%7B%5Cpartial%20O_L&amp;plus;1%7D%7B%5Cpartial%20O_L%7D" alt=""> The derivative of the next layer with regard to the current layer (which can be interpreted as &quot;how a change in the current layer effects the next layer&quot;), which is simply the weights connecting to  the next layer multiplied by the derivative of its activation function. and-  </p>
+
+<p><img src="https://latex.codecogs.com/gif.latex?%5Cfrac%7B%5Cpartial%20O_L%7D%7B%5Cpartial%20W_L%7D" alt=""> - (&quot;How does a change to the weights effect the current layer&quot;), which is the previous layer&#39;s <em>O</em> values, multiplied by the current layer&#39;s activation function derivative.  </p>
+
+<p>To make things clearer, I&#39;ve written the actual calculations, color coded to our network, for the last two layers of our network, L100 and L99.</p>
+
+<p><img src="images/backprop-03.png" alt="some title">  </p>
+
+<p>Notice that the derivative term related to each calculation appears below it. The two derivatives associated with the loss, appearing in red, are of upmost importance, as they are used in the calculations for the previous layers.
+This can be seen clearly in the next diagram:</p>
+
+<p><img src="images/backprop-02.png" alt="some title">  </p>
+
+<p>Notice how ∂Loss <strong>propagates</strong> down the layers. 
+Looking at this pattern, you should start seeing how this could be implemented in code. 
+Also notice that I&#39;ve highlighted the last two layers, which form the before mentioned Perceptron.</p>
+
+<p>Note that I didn’t mention multiplying the entire expression by the learning rate (α) in this diagram, as it seemed too crowded and shadowed the take home messages, which is the application of the chain rule. you should definitely play with different α values to get the best performance. In any case, α does appear in the next diagram. </p>
+
+<h2 id="toc_3">Backpropagating over a batch of instances</h2>
+
+<p>An important point to notice is that each layer in the schematic representations we saw, is in fact a vector, representing the computations done for a single instance. Usually we would like to input a batch of instances into the network. This will be clearer after going over the next diagram, which shows the calculation for a batch of <em>n</em> instances. Notice that this is the same exact network (5 neurons for layer L95, 2 neurons for layer L96 and so on...), only that we are now looking at n instances and not just one.  </p>
+
+<p>The most challenging part for me, when implementing backprop, was to get the sizes of the different layers and weights and gradient matrices to play nice. This illustration aims to set things in order.</p>
+
+<p><img src="images/backprop-01.png" alt="some title"></p>
+
+<p>On top you will see the schematic network. The actual size of n makes no difference (for the calculations. obviously it does make a difference in the larger scheme of things...), for as you will notice, when we perform matrix multiplications while backpropagating, we always sum over <em>n</em>. that is to say, the length of <em>n</em> is &quot;lost&quot; during matrix multiplication. And this is exactly what we want, to sum over the loss from all instances in our batch.</p>
+
+<p>The rest of the diagram is divided into two sections: </p>
+
+<ul>
+<li>Forward pass.</li>
+<li>Backpropagation. </li>
+</ul>
+
+<p>The forward pass should be pretty obvious to most of you. If it&#39;s not, I would recommend reading about matrix multiplications before moving any further.
+One thing I will point out is the fact that each weight matrix takes a layer of size <em>(n,k)</em> and outputs a layer of size <em>(n,j)</em>. such weight matrix will be of size <em>(k,j)</em>.<br>
+You will probably notice that this diagram is missing the bias unit. That is because I wanted to keep it as clear as possible, and focus on how the different matrices sizes fit into the backpropagation process. There is a short section on adding the bias unit below.</p>
+
+<p>The backpropagation part is a &quot;bit&quot; trickier... :)<br>
+This section of the diagram is divided in to three sub sections:  </p>
+
+<ul>
+<li><p><strong>Variables</strong> </p>
+
+<p>Here I list the different elements of the calculation, and most importantly, their shape. A few notes on this part:</p>
+
+<ol>
+<li><em>Z</em> refers to the layer&#39;s values before activation. </li>
+<li><em>O</em> refers to the layer&#39;s values after activation. </li>
+<li><em>σ</em> refers to the activation function.</li>
+<li><em>g&#39;</em> refers to the derivative of the activation function.<br></li>
+</ol></li>
+</ul>
+
+<p>Notice that this section groups the variables constituting <img src="https://latex.codecogs.com/gif.latex?%5Cfrac%7B%5Cpartial%20O_L&amp;plus;1%7D%7B%5Cpartial%20O%7D" alt=""> and <img src="https://latex.codecogs.com/gif.latex?%5Cfrac%7B%5Cpartial%20L%7D%7B%5Cpartial%20O_L&amp;plus;1%7D" alt=""> at the top, and those constituting <img src="https://latex.codecogs.com/gif.latex?%5Cfrac%7B%5Cpartial%20O%7D%7B%5Cpartial%20W%7D" alt=""> at the bottom. </p>
+
+<ul>
+<li><strong>Calculation</strong><br>
+This is where all the drama takes place. There is actually nothing new here. These are the same exact calculations seen on the previous diagrams, but with matrix sizes clearly written and depicted. Also, when to use element wise multiplication, and when to use matrix multiplication is clearly stated (matrix multiplication is denoted as @, as this is the shorthand for np.dot. You will see it in action in the code section below) as well as when you need to transpose a matrix. 
+The diagram and following code, assumes a squared loss function. Its derivative is defined as <code>output - labels</code>.</li>
+</ul>
+
+<h2 id="toc_4">Code</h2>
+
+<p>A few notes about this section:  </p>
+
+<ol>
+<li>For readability purposes, the code presented here is pseudocode.</li>
+<li>As this post is meant to be used as a practical guide, I encourage you to go over the diagrams and try to write your <strong>own</strong> implementation <strong>before</strong> looking at the code example. The diagrams has all the information you need to successfully build it yourself. Look at the second diagram and see how the gradient is passed from one layer to the next. Look at the third diagram, and make sure you understand what is multiplied by what and what axes are summed over. See how we obtain the shape fitting our layer&#39;s weights in each iteration.</li>
+<li>There are plenty of solutions online. This <a href="https://iamtrask.github.io/2015/07/12/basic-python-network/" title="A neural network in 11 lines of python">one</a> I highly recommend as it is very simple to understand. My own implementation was largely based on it. </li>
+<li>The code assumes using the sigmoid activation function. Due to the fact that the derivative of the sigmoid function (<code>*σ(z) \*1-σ(z)*</code>) requires only the <em>O</em> values, we don&#39;t need the neuron&#39;s values before activation (<em>Z</em>). For implementation using different activation functions, you will need to save the <em>Z</em> values when doing a forward pass. </li>
+</ol>
+
+<h3 id="toc_5">Using a loop</h3>
+
+<div><pre><code class="language-none">    def train_network(network, iterations, alpha):
+        for i in range(iterations):
+            # forward
+            for layer in network[1:]:
+                layer.nodes = activation_function((layer-1).nodes @ layer.weights)
+            # backward
+            for layer in network.reverse(): # We iterate our network in reverse order.
+                if layer is output_layer: # Calculate the loss
+                    ∂_L =  network[L].nodes - labels
+                elif layer is (output_layer-1): # These are the first weights to be updated (W100 in the diagrams)
+                    ∆w.append(alpha * layer-1.nodes.T @ (∂_L * activation_derivative((layer).nodes)))
+                else:
+                    ∂_L = ∂_L  @ (layer+1).weights.T * activation_derivative((layer+1).nodes)
+                    ∆w.append(alpha * (layer-1).nodes.T @ (∂_L * activation_derivative(layer.nodes)))
+
+        # update weights:
+            network.weights += ∆w</code></pre></div>
+
+<h3 id="toc_6">Using recurssion</h3>
+
+<div><pre><code class="language-none">    def backprop(current_layer=1):
+        if current_layer is output_layer:
+            ∂_L = current_layer - labels
+            current_layer.∆w = ∂_L * g&#39;(Z(current_layer.nodes)) * (current_layer-1).nodes
+            return ∂_L
+        else:
+            ∂_L = backprop(current_layer+1)
+            ∂_L = ∂_L * g&#39;(Z((current_layer+1).nodes)) * (current_layer+1).W
+            current_layer.∆w = ∂_L * g&#39;(Z(current_layer.nodes)) * (current_layer-1).nodes
+            return ∂_L
+
+    layers.W += layers.∆w    </code></pre></div>
+
+<h2 id="toc_7">Adding a bias unit</h2>
+
+<p>You may have noticed the previous diagrams were missing the bias units. I chose to leave the bias from these diagrams as I wanted to keep them as simple and intuitive as possible , but you should definitely consider adding it!<br>
+You can add a bias &quot;manually&quot; for each layer, and then calculate the derivative of the loss in respect to that bias:</p>
+
+<p><img src="https://latex.codecogs.com/gif.latex?%5CDelta%20W_b%20%3D%5Cfrac%7B%5Cpartial%7BL%7D%7D%7B%5Cpartial%7BW_b%7D%7D%20%3D%20%5Cfrac%7B%5Cpartial%7BL%7D%7D%7B%5Cpartial%7BO%7D%7D%20*%5Cfrac%7B%5Cpartial%7BO%7D%7D%7BW_b%7D" alt=""></p>
+
+<p>We already calculated <img src="https://latex.codecogs.com/gif.latex?%5Cfrac%7B%5Cpartial%7BL%7D%7D%7B%5Cpartial%7BO%7D%7D" alt="">, and <img src="https://latex.codecogs.com/gif.latex?%5Cfrac%7B%5Cpartial%7BO%7D%7D%7BW_b%7D" alt=""> is just the activation function derivative of that layer. </p>
+
+<p>You could also add the bias to the weights matrix. This basically just means appending a vector of bias neurons (a vector of 1&#39;s) to each layer, and initialize the weight matrices shape accordingly (just like you do in simple linear regression). The one thing to keep in mind though, is that the bias units themselves should never be updated in the forward pass, as they are connected to the neurons of the <strong>next</strong> layer, but NOT to the neurons of the <strong>previous</strong> layer (See diagram). 
+<img src="images/backprop-04.png" alt="some title"></p>
+
+<p>One way you can approach this is to avoid updating these neurons, but this can get tricky, especially in the backward pass (Full disclosure, this is what I did, and I don&#39;t recommend it...). A simpler solution is to do the forward and backward pass normally, but re-initialize the bias neurons to 1 after each iteration.</p>
+
+<h2 id="toc_8">Some useful tips</h2>
+
+<ul>
+<li>Do <strong>NOT</strong> update the weights while back-propagating!! Remember that the next iteration will need these (non-updated) weights to compute the loss. You can either save the ∆w&#39;s, and update the weights at the end of the loop (like I&#39;m doing in the code examples), or constantly update the weights two layers ahead, which I think is way more confusing.. </li>
+<li>Be aware that the larger and more complex your network is, the more iterations it will need in order to converge and output a value resembling your true values. So don&#39;t be surprised if you add a layer or two and suddenly your network performs poorly.<br></li>
+<li>If a layer is not activated by a non-linear function (for example the output layer), the gradient is just 1.</li>
+<li>The fact that your program doesn&#39;t crash, doesn&#39;t mean it works. make sure your network converges, and that the loss decreases.</li>
+<li>The fact that your network converges and your loss decreases, doesn&#39;t mean it&#39;s working optimally. compare your results to other implementations. play around with the learning rate, and the structure of the network.</li>
+<li>Try different initialization methods for the weights. This can have a <strong>huge</strong> effect on performance.</li>
+</ul>
+
+<h2 id="toc_9">Summary</h2>
+
+<p>Backpropagation is a tough nut to crack, but if you wish to have a good understanding of how neural networks work, you should avoid jumping into high level solutions such as <a href="https://www.tensorflow.org/tutorials/">TensorFlow</a> or <a href="https://pytorch.org/">Pytorch</a> before implementing a simple network yourself. This is the basis for all deep learning and is <a href="https://medium.com/@karpathy/yes-you-should-understand-backprop-e2f06eab496b">crucial</a> for successfully working with more complicated networks. 
+It&#39;s also fun (when it works). </p>
+
+<p>Good luck!</p>
+
+<p><br><br>
+<p style="text-align: right; color: gray;"> Michael Chein 03/02/2019 </p></p>
+
+
+
+
+</body>
+
+</html>
